@@ -1,4 +1,4 @@
-package repository;
+package br.com.newgo.mercado.repository;
 
 import br.com.newgo.mercado.models.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
