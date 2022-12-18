@@ -46,9 +46,7 @@ public class ProdutoController {
         BeanUtils.copyProperties(produtoDto, produto);
         produto.setImagem(disco.salvar(foto));
         produtoService.salvar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                produtoParaDtoOutput(produto)
-        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(produto);
     }
 
     @PutMapping(value = { "/{id}"},
@@ -66,7 +64,20 @@ public class ProdutoController {
         BeanUtils.copyProperties(produtoDto, produto);
         produto.setId(produtoOptional.get().getId());
         produtoService.salvar(produto);
-        return ResponseEntity.status(HttpStatus.OK).body(produtoParaDtoOutput(produto));
+        return ResponseEntity.status(HttpStatus.OK).body(produto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> alterarStataus(@PathVariable(value = "id") UUID id){
+        Optional<Produto> produtoOptional = produtoService.findById(id);
+        if(produtoOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado.");
+        }
+
+        Produto produtoAlterado = produtoOptional.get();
+        produtoAlterado.setAtivo(!produtoAlterado.isAtivo());
+        produtoService.salvar(produtoAlterado);
+        return ResponseEntity.status(HttpStatus.OK).body(produtoAlterado);
     }
 
     @DeleteMapping("/{id}")
