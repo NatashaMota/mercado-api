@@ -19,21 +19,37 @@ public class Disco {
     @Value("${contato.disco.diretorio-fotos}")
     private String diretorioFotos;
 
-    public String salvarFoto(MultipartFile foto){
+    public String salvar(MultipartFile foto){
         return this.salvar(this.diretorioFotos, foto);
     }
 
-    public String salvar(String diretorio, MultipartFile arquivo){
+    public String alterar(MultipartFile foto, String nomeFoto){
+        Path diretorioPath = Paths.get(this.raiz, this.diretorioFotos);
+        this.remover(nomeFoto);
+        return this.salvar(foto);
+    }
+
+    public void remover(String nomeFoto) {
+        Path diretorioPath = Paths.get(this.raiz, this.diretorioFotos);
+        try {
+            Files.deleteIfExists(diretorioPath.resolve(nomeFoto));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public String salvar(String diretorio, MultipartFile foto){
         Path diretorioPath = Paths.get(this.raiz, diretorio);
         String novoNome = UUID.randomUUID().toString() +
-                getExtensao(arquivo.getOriginalFilename());
+                getExtensao(foto.getOriginalFilename());
         Path arquivoPath = diretorioPath.resolve(novoNome);
         try{
             Files.createDirectories(diretorioPath);
-            arquivo.transferTo(arquivoPath.toFile());
+            foto.transferTo(arquivoPath.toFile());
             return novoNome;
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao salvar arquivo.");
+            throw new RuntimeException("Erro ao salvar foto.");
         }
     }
 

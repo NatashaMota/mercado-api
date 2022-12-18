@@ -39,26 +39,30 @@ public class ProdutoController {
 
     @PostMapping(value = {"", "/"},
             consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Object> adicionar(@RequestPart("produto") @Valid ProdutoDto produtoDto, @RequestPart("foto") MultipartFile foto){
+    public ResponseEntity<Object> adicionar(@RequestPart("produto") @Valid ProdutoDto produtoDto,
+                                            @RequestPart("foto") MultipartFile foto){
 
         Produto produto = new Produto();
         BeanUtils.copyProperties(produtoDto, produto);
-        produto.setImagemCaminho(disco.salvarFoto(foto));
+        produto.setImagem(disco.salvar(foto));
         produtoService.salvar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 produtoParaDtoOutput(produto)
         );
     }
 
-    @PutMapping({"/{id}"})
+    @PutMapping(value = { "/{id}"},
+            consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<Object> alterar(@PathVariable(value = "id") UUID id,
-                                          @RequestBody @Valid ProdutoDto produtoDto){
+                                          @RequestPart("produto") @Valid ProdutoDto produtoDto,
+                                          @RequestPart("foto") MultipartFile foto){
         Optional<Produto> produtoOptional = produtoService.findById(id);
         if(produtoOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado.");
         }
 
         Produto produto = modelMapper.map(produtoOptional.get(), Produto.class);
+        produto.setImagem(disco.alterar(foto, produtoOptional.get().getImagem()));
         BeanUtils.copyProperties(produtoDto, produto);
         produto.setId(produtoOptional.get().getId());
         produtoService.salvar(produto);
@@ -71,6 +75,7 @@ public class ProdutoController {
         if(produtoOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado.");
         }
+        disco.remover(produtoOptional.get().getImagem());
         produtoService.deletar(produtoOptional.get());
         return ResponseEntity.status(HttpStatus.OK).body("Produto deletado com sucesso.");
     }

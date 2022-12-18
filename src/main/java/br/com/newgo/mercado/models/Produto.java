@@ -17,18 +17,18 @@ public class Produto implements Serializable {
     private String nome;
     @Column(nullable = false)
     private String descricao;
-    private String imagemCaminho;
+    private String imagem;
 
     private boolean ativo = false;
 
     public Produto() {
     }
 
-    public Produto(UUID id, String nome, String descricao, String imagemCaminho) {
+    public Produto(UUID id, String nome, String descricao, String imagem) {
         setId(id);
         setNome(nome);
         setDescricao(descricao);
-        setImagemCaminho(imagemCaminho);
+        setImagem(imagem);
     }
 
     public UUID getId() {
@@ -55,12 +55,12 @@ public class Produto implements Serializable {
         this.descricao = descricao;
     }
 
-    public String getImagemCaminho() {
-        return imagemCaminho;
+    public String getImagem() {
+        return imagem;
     }
 
-    public void setImagemCaminho(String imagemCaminho) {
-        this.imagemCaminho = imagemCaminho;
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 
     public boolean isAtivo() {
@@ -77,7 +77,7 @@ public class Produto implements Serializable {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
-                ", imagemCaminho='" + imagemCaminho + '\'' +
+                ", imagem='" + imagem + '\'' +
                 '}';
     }
 
