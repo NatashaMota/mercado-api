@@ -19,6 +19,8 @@ public class Produto implements Serializable {
     private String descricao;
     private String imagemCaminho;
 
+    private boolean ativo = false;
+
     public Produto() {
     }
 
@@ -59,6 +61,14 @@ public class Produto implements Serializable {
 
     public void setImagemCaminho(String imagemCaminho) {
         this.imagemCaminho = imagemCaminho;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 
     @Override

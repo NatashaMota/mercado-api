@@ -8,12 +8,20 @@ public class ProdutoDto {
     private String nome;
     @NotBlank
     private String descricao;
+    @NotBlank
+    private String imagem;
 
-    public String getNome() {
-        return nome;
+    public ProdutoDto(String nome, String descricao, String imagem) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.imagem = imagem;
     }
 
     public ProdutoDto() {
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     public void setNome(String nome) {
@@ -28,4 +36,11 @@ public class ProdutoDto {
         this.descricao = descricao;
     }
 
+    public String getImagemCaminho() {
+        return imagem;
+    }
+
+    public void setImagemCaminho(String imagemCaminho) {
+        this.imagem = imagemCaminho;
+    }
 }

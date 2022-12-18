@@ -5,6 +5,10 @@ import br.com.newgo.mercado.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class ProdutoService {
 
@@ -14,8 +18,21 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
+    public List<Produto> listarTodos(){
+        return produtoRepository.findAll();
+    }
+
     @Transactional
     public Produto salvar(Produto produto){
         return produtoRepository.save(produto);
     }
+
+    public void deletar(Produto produto){
+        produtoRepository.delete(produto);
+    }
+
+    public Optional<Produto> findById(UUID id){
+        return produtoRepository.findById(id);
+    }
+
 }
