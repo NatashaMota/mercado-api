@@ -23,7 +23,6 @@ public class ProdutoService {
     }
 
     public List<Produto> listarPorNome(String nome){
-        System.out.println(produtoRepository.findAllByNome(nome));
         return produtoRepository.findAllByNome(nome);
     }
 

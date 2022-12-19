@@ -44,7 +44,6 @@ public class ProdutoController {
 
     @GetMapping("/nome/{nome}")
     public ResponseEntity<Object> listarNome(@PathVariable(name = "nome") String nome){
-        System.out.println(nome);
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarPorNome(nome));
     }
 
