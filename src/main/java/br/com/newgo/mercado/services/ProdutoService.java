@@ -22,6 +22,15 @@ public class ProdutoService {
         return produtoRepository.findAll();
     }
 
+    public List<Produto> listarPorNome(String nome){
+        System.out.println(produtoRepository.findAllByNome(nome));
+        return produtoRepository.findAllByNome(nome);
+    }
+
+    public List<Produto> listarPorDescricao(String descricao){
+        return produtoRepository.findByDescricaoContaining(descricao);
+    }
+
     @Transactional
     public Produto salvar(Produto produto){
         return produtoRepository.save(produto);

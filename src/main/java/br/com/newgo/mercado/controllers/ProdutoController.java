@@ -37,6 +37,17 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarTodos());
     }
 
+    @GetMapping("/descricao/{descricao}")
+    public ResponseEntity<Object> listarDescricao(@PathVariable(name = "descricao") String descricao){
+        return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarPorDescricao(descricao));
+    }
+
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<Object> listarNome(@PathVariable(name = "nome") String nome){
+        System.out.println(nome);
+        return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarPorNome(nome));
+    }
+
     @PostMapping(value = {"", "/"},
             consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<Object> adicionar(@RequestPart("produto") @Valid ProdutoDto produtoDto,
