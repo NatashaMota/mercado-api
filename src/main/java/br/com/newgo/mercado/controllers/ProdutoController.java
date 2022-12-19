@@ -10,7 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping("/produto")
 public class ProdutoController {
 
@@ -34,6 +34,12 @@ public class ProdutoController {
 
     @GetMapping({"","/" })
     public ResponseEntity<Object> listarTodos(){
+        System.out.println(SecurityContextHolder.getContext());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getDetails());
+
+
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarTodos());
     }
 

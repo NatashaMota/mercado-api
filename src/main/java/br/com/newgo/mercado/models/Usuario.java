@@ -67,8 +67,8 @@ public class Usuario extends AbstractEntity implements UserDetails {
         this.senha = senha;
     }
 
-    public Perfil getPerfil() {
-        return perfil;
+    public String getPerfil() {
+        return perfil.getDescricao();
     }
 
     public void setPerfil(Perfil perfil) {
