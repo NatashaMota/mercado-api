@@ -2,7 +2,6 @@ package br.com.newgo.mercado.services;
 
 import br.com.newgo.mercado.models.Produto;
 import br.com.newgo.mercado.repository.ProdutoRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class ProdutoService {
         return produtoRepository.findByDescricaoContaining(descricao);
     }
 
-    @Transactional
+    //@Transactional
     public Produto salvar(Produto produto){
         return produtoRepository.save(produto);
     }

@@ -1,7 +1,8 @@
 package br.com.newgo.mercado.models;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;

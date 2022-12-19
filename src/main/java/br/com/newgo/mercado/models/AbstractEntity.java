@@ -1,10 +1,14 @@
 package br.com.newgo.mercado.models;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+//import jakarta.persistence.GeneratedValue;
+//import jakarta.persistence.GenerationType;
+//import jakarta.persistence.Id;
+//import jakarta.persistence.MappedSuperclass;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.UUID;
 

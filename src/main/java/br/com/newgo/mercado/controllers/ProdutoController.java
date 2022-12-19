@@ -5,7 +5,6 @@ import br.com.newgo.mercado.dtos.ProdutoDtoOutput;
 import br.com.newgo.mercado.models.Produto;
 import br.com.newgo.mercado.services.ProdutoService;
 import br.com.newgo.mercado.storage.Disco;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 

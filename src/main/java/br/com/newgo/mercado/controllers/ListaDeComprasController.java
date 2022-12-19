@@ -5,7 +5,6 @@ import br.com.newgo.mercado.models.Usuario;
 import br.com.newgo.mercado.repository.UsuarioRepository;
 import br.com.newgo.mercado.services.ListaDeComprasService;
 import br.com.newgo.mercado.services.UsuarioService;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @Controller
@@ -22,7 +22,6 @@ public class ListaDeComprasController {
     private final ListaDeComprasService listaDeComprasService;
     private final UsuarioService usuarioService;
     private final ModelMapper modelMapper;
-    private final UsuarioRepository usuarioRepository;
 
     public ListaDeComprasController(ListaDeComprasService listaDeComprasService, ModelMapper modelMapper,
                                     UsuarioService usuarioService,
@@ -30,7 +29,6 @@ public class ListaDeComprasController {
         this.listaDeComprasService = listaDeComprasService;
         this.modelMapper = modelMapper;
         this.usuarioService = usuarioService;
-        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping("/usuario/{id}")
@@ -42,10 +40,7 @@ public class ListaDeComprasController {
     public ResponseEntity<Object> adicionar(@RequestBody @Valid ListaDeComprasDto listaDeComprasDto,
                                             Authentication authentication){
         for(UUID id: listaDeComprasDto.getLista().keySet()){
-            System.out.println(authentication.getName());
             Usuario usuario = usuarioService.buscarPorEmail(authentication.getName());
-            System.out.println(usuario);
-            //ListaDeCompras listaDeCompras = new ListaDeCompras(id,listaDeComprasDto.getLista().get(id));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDeComprasDto);
