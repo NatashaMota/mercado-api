@@ -30,5 +30,5 @@ public class Usuario extends AbstractEntity{
     private Perfil perfil;
 
     @OneToMany(mappedBy = "usuario")
-    private Set<ListaDeCompras> listaCompras = new HashSet<>();
+    private Set<ListaCompra> listaCompras = new HashSet<>();
 }
