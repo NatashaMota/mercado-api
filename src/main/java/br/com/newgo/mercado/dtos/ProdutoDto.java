@@ -2,6 +2,7 @@ package br.com.newgo.mercado.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 
+
 public class ProdutoDto {
 
     @NotBlank

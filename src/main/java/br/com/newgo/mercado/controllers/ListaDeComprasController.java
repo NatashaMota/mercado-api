@@ -1,7 +1,6 @@
 package br.com.newgo.mercado.controllers;
 
 import br.com.newgo.mercado.dtos.ListaDeComprasDto;
-import br.com.newgo.mercado.models.Usuario;
 import br.com.newgo.mercado.repository.UsuarioRepository;
 import br.com.newgo.mercado.services.ListaDeComprasService;
 import br.com.newgo.mercado.services.UsuarioService;
@@ -9,7 +8,6 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,14 +37,7 @@ public class ListaDeComprasController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> adicionar(@RequestBody @Valid ListaDeComprasDto listaDeComprasDto,
-                                            Authentication authentication){
-        for(UUID id: listaDeComprasDto.getLista().keySet()){
-            System.out.println(authentication.getName());
-            Usuario usuario = usuarioService.buscarPorEmail(authentication.getName());
-            System.out.println(usuario);
-            //ListaDeCompras listaDeCompras = new ListaDeCompras(id,listaDeComprasDto.getLista().get(id));
-        }
+    public ResponseEntity<Object> adicionar(@RequestBody @Valid ListaDeComprasDto listaDeComprasDto){
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDeComprasDto);
     }
