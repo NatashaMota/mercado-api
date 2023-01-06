@@ -3,6 +3,7 @@ package br.com.newgo.mercado.controllers;
 import br.com.newgo.mercado.dtos.ProdutoDto;
 import br.com.newgo.mercado.dtos.ProdutoDtoOutput;
 import br.com.newgo.mercado.models.Produto;
+import br.com.newgo.mercado.repository.ProdutoRepository;
 import br.com.newgo.mercado.services.ProdutoService;
 import br.com.newgo.mercado.storage.Disco;
 import jakarta.validation.Valid;
@@ -25,11 +26,14 @@ public class ProdutoController {
     private final ProdutoService produtoService;
     private final Disco disco;
     private final ModelMapper modelMapper;
+    private final ProdutoRepository produtoRepository;
 
-    public ProdutoController(ProdutoService produtoService, Disco disco, ModelMapper modelMapper) {
+    public ProdutoController(ProdutoService produtoService, Disco disco, ModelMapper modelMapper,
+                             ProdutoRepository produtoRepository) {
         this.produtoService = produtoService;
         this.disco = disco;
         this.modelMapper = modelMapper;
+        this.produtoRepository = produtoRepository;
     }
 
     @GetMapping({"","/" })
@@ -44,18 +48,26 @@ public class ProdutoController {
 
     @GetMapping("/nome/{nome}")
     public ResponseEntity<Object> listarNome(@PathVariable(name = "nome") String nome){
-        System.out.println(nome);
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarPorNome(nome));
     }
 
-    @PostMapping(value = {"", "/"},
-            consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Object> adicionar(@RequestPart("produto") @Valid ProdutoDto produtoDto,
-                                            @RequestPart("foto") MultipartFile foto){
-
+    @PostMapping(value = {"", "/"})
+    public ResponseEntity<Object> adicionar(@RequestBody @Valid ProdutoDto produtoDto){
         Produto produto = new Produto();
         BeanUtils.copyProperties(produtoDto, produto);
-        produto.setImagem(disco.salvar(foto));
+        produtoService.salvar(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produto);
+    }
+
+    @PostMapping(value = {"/{id}/imagem"})
+    public ResponseEntity<Object> adicionarImagem(@PathVariable(value = "id") UUID id,
+                                                             @RequestPart @Valid MultipartFile imagem){
+        Optional<Produto> produtoOptional = produtoService.findById(id);
+        if(!produtoEncontrado(produtoOptional)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado.");
+        }
+        Produto produto = produtoOptional.get();
+        produto.setImagem(disco.salvar(imagem));
         produtoService.salvar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(produto);
     }
@@ -102,7 +114,11 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body("Produto deletado com sucesso.");
     }
 
-    public ProdutoDto produtoParaDtoOutput(Produto produto){
+    private ProdutoDto produtoParaDtoOutput(Produto produto){
         return modelMapper.map(produto, ProdutoDtoOutput.class);
+    }
+
+    private boolean produtoEncontrado(Optional optional){
+        return optional.isPresent();
     }
 }
