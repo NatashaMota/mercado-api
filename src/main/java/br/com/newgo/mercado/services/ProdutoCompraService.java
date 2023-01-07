@@ -32,4 +32,12 @@ public class ProdutoCompraService {
     public Optional<ProdutoCompra> acharPorId(UUID id){
         return produtoCompraRepository.findById(id);
     }
+
+    public boolean existePorId(UUID id) {
+        return produtoCompraRepository.existsById(id);
+    }
+
+    public void deletarPorId(UUID id) {
+        produtoCompraRepository.deleteById(id);
+    }
 }

@@ -143,4 +143,18 @@ public class ListaCompraController {
         return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(novoProdutoCompra, ProdutoCompraDtoOutput.class));
     }
 
+    @DeleteMapping({"/produtos/{id}"})
+    public ResponseEntity<Object> removerProdutoCompra(@PathVariable UUID id){
+
+        //TODO: verifica se usuario tem permissao
+
+        if (!produtoCompraService.existePorId(id)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não existe.");
+        }
+
+        produtoCompraService.deletarPorId(id);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+
+    }
+
 }

@@ -11,4 +11,8 @@ public interface ProdutoCompraRepository extends JpaRepository<ProdutoCompra, UU
     boolean existsByListaCompra_IdAndProduto_Id(UUID listaCompraID, UUID produtoID);
 
     List<ProdutoCompra> findByListaCompra_Id(UUID id);
+
+    boolean existsById(UUID id);
+
+    void deleteById(UUID id);
 }
