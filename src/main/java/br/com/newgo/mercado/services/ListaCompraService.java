@@ -6,6 +6,8 @@ import br.com.newgo.mercado.repository.ListaCompraRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ListaCompraService {
@@ -21,5 +23,14 @@ public class ListaCompraService {
 
     public List<ListaCompra> acharPorUsuario(Usuario usuario){
         return listaCompraRepository.findByUsuario(usuario);
+    }
+
+    public ListaCompra acharPorNome(String nome){
+        return listaCompraRepository.findByNome(nome);
+
+    }
+
+    public Optional<ListaCompra> acharPorID(UUID id){
+        return listaCompraRepository.findById(id);
     }
 }

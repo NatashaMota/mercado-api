@@ -2,22 +2,27 @@ package br.com.newgo.mercado.controllers;
 
 import br.com.newgo.mercado.dtos.ListaCompraDto;
 import br.com.newgo.mercado.dtos.ListaCompraDtoOutput;
+import br.com.newgo.mercado.dtos.ProdutoCompraDto;
+import br.com.newgo.mercado.dtos.ProdutoCompraDtoOutput;
 import br.com.newgo.mercado.models.ListaCompra;
+import br.com.newgo.mercado.models.Produto;
+import br.com.newgo.mercado.models.ProdutoCompra;
 import br.com.newgo.mercado.models.Usuario;
 import br.com.newgo.mercado.services.ListaCompraService;
+import br.com.newgo.mercado.services.ProdutoCompraService;
+import br.com.newgo.mercado.services.ProdutoService;
 import br.com.newgo.mercado.services.UsuarioService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/listaCompra")
@@ -26,11 +31,18 @@ public class ListaCompraController {
     private final ListaCompraService listaCompraService;
     private final UsuarioService usuarioService;
     private final ModelMapper modelMapper;
+
+    private final ProdutoService produtoService;
+    private final ProdutoCompraService produtoCompraService;
+
     public ListaCompraController(ListaCompraService listaCompraService, ModelMapper modelMapper,
-                                 UsuarioService usuarioService) {
+                                 UsuarioService usuarioService,
+                                 ProdutoService produtoService, ProdutoCompraService produtoCompraService) {
         this.listaCompraService = listaCompraService;
         this.modelMapper = modelMapper;
         this.usuarioService = usuarioService;
+        this.produtoService = produtoService;
+        this.produtoCompraService = produtoCompraService;
     }
 
     @GetMapping({"", "/"})
@@ -58,4 +70,43 @@ public class ListaCompraController {
 
         return ResponseEntity.status(HttpStatus.OK).body(listaCompraDto);
     }
+
+    @PostMapping({"/{id}/produtos"})
+    public ResponseEntity<Object> adicionarProdutoCompra(@PathVariable UUID id,
+            @RequestBody @Valid ProdutoCompraDto produtoCompraDto){
+
+        Optional<ListaCompra> listaCompraOptional = listaCompraService.acharPorID(id);
+        if (listaCompraOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lista não encontrada.");
+
+        }
+        ListaCompra listaCompra = listaCompraOptional.get();
+
+        Optional<Produto> produtoOptional = produtoService.findById(produtoCompraDto.getIdProduto());
+        if(produtoOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado.");
+        }
+
+        Produto produto = produtoOptional.get();
+
+        if(produtoCompraService.existePorListaCompraIdAndProdutoId(listaCompra.getId(), produto.getId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Produto já existe.");
+        }
+
+        Usuario usuario = usuarioService.buscarPorEmail("adm@adm.com");
+        if (listaCompra.getUsuario() != usuario){
+            //Usuario nao tem permissao pra add
+        }
+
+        ProdutoCompra produtoCompra = new ProdutoCompra();
+        produtoCompra.setQuantidade(produtoCompraDto.getQuantidade());
+        produtoCompra.setProduto(produto);
+        produtoCompra.setListaCompra(listaCompra);
+
+        produtoCompraService.salvar(produtoCompra);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                modelMapper.map(produtoCompra, ProdutoCompraDtoOutput.class));
+    }
+
 }
