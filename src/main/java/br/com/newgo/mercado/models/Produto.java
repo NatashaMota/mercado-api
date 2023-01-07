@@ -1,16 +1,16 @@
 package br.com.newgo.mercado.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,11 +18,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "produtos")
-public class Produto implements Serializable {
+public class Produto extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
     @Column(nullable = false)
     private String nome;
     @Column(nullable = false)
@@ -34,26 +31,4 @@ public class Produto implements Serializable {
     @OneToMany(mappedBy = "produto")
     private Set<ProdutoCompra> produtoCompras = new HashSet<>();
 
-    @Override
-    public String toString() {
-        return "Produto{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", imagem='" + imagem + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Produto produto = (Produto) o;
-        return id.equals(produto.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

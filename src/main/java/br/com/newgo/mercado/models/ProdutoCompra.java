@@ -1,12 +1,13 @@
 package br.com.newgo.mercado.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,11 +15,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "PRODUTO_COMPRA")
-public class ProdutoCompra {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+public class ProdutoCompra extends AbstractEntity {
 
     @Column(nullable = false)
     private Integer quantidade;

@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,10 +16,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "LISTA_COMPRA")
 public class ListaCompra extends AbstractEntity{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
 
     @Column(nullable = false)
     private String nome;
