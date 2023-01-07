@@ -4,6 +4,8 @@ import br.com.newgo.mercado.models.ProdutoCompra;
 import br.com.newgo.mercado.repository.ProdutoCompraRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 @Service
 public class ProdutoCompraService {
@@ -23,4 +25,11 @@ public class ProdutoCompraService {
         return produtoCompraRepository.existsByListaCompra_IdAndProduto_Id(listaCompraId, produtoId);
     }
 
+    public List<ProdutoCompra> acharPorListaId(UUID listaCompraId){
+        return produtoCompraRepository.findByListaCompra_Id(listaCompraId);
+    }
+
+    public Optional<ProdutoCompra> acharPorId(UUID id){
+        return produtoCompraRepository.findById(id);
+    }
 }

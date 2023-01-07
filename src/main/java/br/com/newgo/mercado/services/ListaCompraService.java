@@ -33,4 +33,12 @@ public class ListaCompraService {
     public Optional<ListaCompra> acharPorID(UUID id){
         return listaCompraRepository.findById(id);
     }
+
+    public boolean existePorId(UUID id){
+        return listaCompraRepository.existsById(id);
+    }
+
+    public void deletarPorId(UUID id){
+        listaCompraRepository.deleteById(id);
+    }
 }

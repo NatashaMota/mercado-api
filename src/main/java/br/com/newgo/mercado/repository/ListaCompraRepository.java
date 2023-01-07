@@ -16,4 +16,8 @@ public interface ListaCompraRepository extends JpaRepository<ListaCompra, UUID> 
     ListaCompra findByNome(String nome);
     Optional<ListaCompra> findById(UUID id);
 
+    boolean existsById(UUID id);
+
+    void deleteById(UUID id);
+
 }

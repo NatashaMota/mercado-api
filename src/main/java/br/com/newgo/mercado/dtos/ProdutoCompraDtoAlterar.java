@@ -7,17 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-public class ProdutoCompraDto {
-    @NotNull
-    private UUID idProduto;
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProdutoCompraDtoAlterar {
     @NotNull
     @Min(1)
     private Integer quantidade;
-
 }

@@ -1,9 +1,6 @@
 package br.com.newgo.mercado.controllers;
 
-import br.com.newgo.mercado.dtos.ListaCompraDto;
-import br.com.newgo.mercado.dtos.ListaCompraDtoOutput;
-import br.com.newgo.mercado.dtos.ProdutoCompraDto;
-import br.com.newgo.mercado.dtos.ProdutoCompraDtoOutput;
+import br.com.newgo.mercado.dtos.*;
 import br.com.newgo.mercado.models.ListaCompra;
 import br.com.newgo.mercado.models.Produto;
 import br.com.newgo.mercado.models.ProdutoCompra;
@@ -71,6 +68,19 @@ public class ListaCompraController {
         return ResponseEntity.status(HttpStatus.OK).body(listaCompraDto);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> remover(@PathVariable UUID id){
+        if (!listaCompraService.existePorId(id)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lista não existe.");
+        }
+
+        //TODO: verificar se a lista pertence ao usuario
+
+        listaCompraService.deletarPorId(id);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+
     @PostMapping({"/{id}/produtos"})
     public ResponseEntity<Object> adicionarProdutoCompra(@PathVariable UUID id,
             @RequestBody @Valid ProdutoCompraDto produtoCompraDto){
@@ -95,7 +105,7 @@ public class ListaCompraController {
 
         Usuario usuario = usuarioService.buscarPorEmail("adm@adm.com");
         if (listaCompra.getUsuario() != usuario){
-            //Usuario nao tem permissao pra add
+            //TODO: Usuario nao tem permissao pra add
         }
 
         ProdutoCompra produtoCompra = new ProdutoCompra();
@@ -107,6 +117,30 @@ public class ListaCompraController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 modelMapper.map(produtoCompra, ProdutoCompraDtoOutput.class));
+    }
+
+    @GetMapping({"/{id}/produtos"})
+    public ResponseEntity<Object> listarProdutosListaCompra(@PathVariable UUID id){
+        List<ProdutoCompraDtoOutput> lista = new ArrayList<>();
+        for(ProdutoCompra produtoCompra: produtoCompraService.acharPorListaId(id)){
+            lista.add(modelMapper.map(produtoCompra, ProdutoCompraDtoOutput.class));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(lista);
+    }
+
+    @PutMapping({"/produtos/{id}"})
+    public ResponseEntity<Object> alterarProdutosListaCompra(@PathVariable UUID id,
+                                                             @RequestBody @Valid ProdutoCompraDtoAlterar produtoCompraDto){
+        Optional<ProdutoCompra> produtoCompraOptional = produtoCompraService.acharPorId(id);
+        if(produtoCompraOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto-Compra não encontrado na lista.");
+        }
+
+        ProdutoCompra novoProdutoCompra = produtoCompraOptional.get();
+        novoProdutoCompra.setQuantidade(produtoCompraDto.getQuantidade());
+        produtoCompraService.salvar(novoProdutoCompra);
+
+        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(novoProdutoCompra, ProdutoCompraDtoOutput.class));
     }
 
 }
