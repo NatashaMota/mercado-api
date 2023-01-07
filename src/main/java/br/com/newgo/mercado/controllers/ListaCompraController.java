@@ -65,7 +65,7 @@ public class ListaCompraController {
         novaListaCompra.setUsuario(usuario);
         listaCompraService.salvar(novaListaCompra);
 
-        return ResponseEntity.status(HttpStatus.OK).body(listaCompraDto);
+        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(novaListaCompra, ListaCompraDtoOutput.class));
     }
 
     @DeleteMapping("/{id}")

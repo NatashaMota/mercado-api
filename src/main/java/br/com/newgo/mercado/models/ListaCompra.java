@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -25,4 +27,8 @@ public class ListaCompra extends AbstractEntity{
 
     @ManyToOne
     private Usuario usuario;
+
+
+    @OneToMany(mappedBy = "listaCompra", cascade = CascadeType.ALL)
+    private Set<ProdutoCompra> produtoCompras = new HashSet<>();
 }

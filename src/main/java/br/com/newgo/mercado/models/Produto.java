@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -28,6 +30,9 @@ public class Produto implements Serializable {
     private String imagem;
 
     private boolean ativo = false;
+
+    @OneToMany(mappedBy = "produto")
+    private Set<ProdutoCompra> produtoCompras = new HashSet<>();
 
     @Override
     public String toString() {
