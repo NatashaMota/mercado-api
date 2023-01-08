@@ -8,9 +8,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 @Controller
@@ -34,6 +37,25 @@ public class CategoriaController {
         Categoria novaCategoria = modelMapper.map(categoriaDto, Categoria.class);
         categoriaService.salvar(novaCategoria);
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(novaCategoria, CategoriaDtoOutput.class));
+    }
+
+    @GetMapping({"", "/"})
+    public ResponseEntity<Object> listar(){
+        List<CategoriaDtoOutput> categorias = new ArrayList<>();
+        for (Categoria categoria: categoriaService.listar()){
+            categorias.add(modelMapper.map(categoria, CategoriaDtoOutput.class));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(categorias);
+    }
+
+    @GetMapping({"/{id}", "{id}/"})
+    public ResponseEntity<Object> listarPorID(@PathVariable UUID id){
+        Optional<Categoria> categoriaOptional = categoriaService.listarPorId(id);
+        if(categoriaOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não existe.");
+        }
+        CategoriaDtoOutput categoria = modelMapper.map(categoriaOptional.get(), CategoriaDtoOutput.class);
+        return ResponseEntity.status(HttpStatus.OK).body(categoria);
     }
 
 }
