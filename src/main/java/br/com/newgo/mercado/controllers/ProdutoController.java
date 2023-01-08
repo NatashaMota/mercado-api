@@ -41,7 +41,6 @@ public class ProdutoController {
     @GetMapping({"","/" })
     public ResponseEntity<Object> listarTodos(){
         List<ProdutoDtoOutput> produtos = this.produtosParaProdutoDtoOutput(produtoService.listarTodos());
-
         return ResponseEntity.status(HttpStatus.OK).body(produtos);
     }
 
