@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,25 +40,28 @@ public class ProdutoController {
 
     @GetMapping({"","/" })
     public ResponseEntity<Object> listarTodos(){
-        return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarTodos());
+        List<ProdutoDtoOutput> produtos = this.produtosParaProdutoDtoOutput(produtoService.listarTodos());
+
+        return ResponseEntity.status(HttpStatus.OK).body(produtos);
     }
 
     @GetMapping("/descricao/{descricao}")
     public ResponseEntity<Object> listarDescricao(@PathVariable(name = "descricao") String descricao){
-        return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarPorDescricao(descricao));
+        List<ProdutoDtoOutput> produtos = produtosParaProdutoDtoOutput(produtoService.listarPorDescricao(descricao));
+        return ResponseEntity.status(HttpStatus.OK).body(produtos);
     }
 
     @GetMapping("/nome/{nome}")
     public ResponseEntity<Object> listarNome(@PathVariable(name = "nome") String nome){
-        return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarPorNome(nome));
+        List<ProdutoDtoOutput> produtos = produtosParaProdutoDtoOutput(produtoService.listarPorNome(nome));
+        return ResponseEntity.status(HttpStatus.OK).body(produtos);
     }
 
     @PostMapping(value = {"", "/"})
     public ResponseEntity<Object> adicionar(@RequestBody @Valid ProdutoDto produtoDto){
-        Produto produto = new Produto();
-        BeanUtils.copyProperties(produtoDto, produto);
+        Produto produto = modelMapper.map(produtoDto, Produto.class);
         produtoService.salvar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(produto, ProdutoDtoOutput.class));
     }
 
     @PostMapping(value = {"/{id}/imagem"})
@@ -69,7 +74,7 @@ public class ProdutoController {
         Produto produto = produtoOptional.get();
         produto.setImagem(disco.salvar(imagem));
         produtoService.salvar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(produto, ProdutoDtoOutput.class));
     }
 
     @PutMapping(value = { "/{id}"},
@@ -87,7 +92,7 @@ public class ProdutoController {
         BeanUtils.copyProperties(produtoDto, produto);
         produto.setId(produtoOptional.get().getId());
         produtoService.salvar(produto);
-        return ResponseEntity.status(HttpStatus.OK).body(produto);
+        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(produto, ProdutoDtoOutput.class));
     }
 
     @PutMapping("/{id}")
@@ -96,11 +101,17 @@ public class ProdutoController {
         if(produtoOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado.");
         }
+        Produto produto = produtoOptional.get();
 
-        Produto produtoAlterado = produtoOptional.get();
-        produtoAlterado.setAtivo(!produtoAlterado.isAtivo());
-        produtoService.salvar(produtoAlterado);
-        return ResponseEntity.status(HttpStatus.OK).body(produtoAlterado);
+        if(produto.isAtivo()){
+            produto.setAtivo(false);
+        } else {
+            produto.setAtivo(true);
+        }
+
+        produtoService.salvar(produto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(produto, ProdutoDtoOutput.class));
     }
 
     @DeleteMapping("/{id}")
@@ -114,8 +125,12 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body("Produto deletado com sucesso.");
     }
 
-    private ProdutoDto produtoParaDtoOutput(Produto produto){
-        return modelMapper.map(produto, ProdutoDtoOutput.class);
+    private List<ProdutoDtoOutput> produtosParaProdutoDtoOutput(List<Produto> produtos){
+        List<ProdutoDtoOutput> produtosDtoOutputList = new ArrayList<>();
+        for(Produto produto: produtos){
+            produtosDtoOutputList.add(modelMapper.map(produto, ProdutoDtoOutput.class));
+        }
+        return produtosDtoOutputList;
     }
 
     private boolean produtoEncontrado(Optional optional){
