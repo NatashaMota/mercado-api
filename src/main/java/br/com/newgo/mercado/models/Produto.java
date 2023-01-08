@@ -1,9 +1,6 @@
 package br.com.newgo.mercado.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +27,8 @@ public class Produto extends AbstractEntity {
 
     @OneToMany(mappedBy = "produto")
     private Set<ProdutoCompra> produtoCompras = new HashSet<>();
+
+    @ManyToOne
+    private Categoria categoria;
 
 }
