@@ -23,11 +23,11 @@ public class ProdutoService {
     }
 
     public List<Produto> listarPorNome(String nome){
-        return produtoRepository.findAllByNome(nome);
+        return produtoRepository.findAllByNomeContainingIgnoreCase(nome);
     }
 
     public List<Produto> listarPorDescricao(String descricao){
-        return produtoRepository.findByDescricaoContaining(descricao);
+        return produtoRepository.findByDescricaoContainingIgnoreCase(descricao);
     }
 
     @Transactional
