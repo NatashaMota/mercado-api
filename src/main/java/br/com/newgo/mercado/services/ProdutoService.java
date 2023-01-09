@@ -1,6 +1,7 @@
 package br.com.newgo.mercado.services;
 
 import br.com.newgo.mercado.models.Produto;
+import br.com.newgo.mercado.repository.CategoriaRepository;
 import br.com.newgo.mercado.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.UUID;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final CategoriaRepository categoriaRepository;
 
-    public ProdutoService(ProdutoRepository produtoRepository) {
+    public ProdutoService(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository) {
         this.produtoRepository = produtoRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     public List<Produto> listarTodos(){

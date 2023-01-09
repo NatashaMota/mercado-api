@@ -15,4 +15,6 @@ public class ProdutoCompraDtoAlterar {
     @NotNull
     @Min(1)
     private Integer quantidade;
+
+
 }

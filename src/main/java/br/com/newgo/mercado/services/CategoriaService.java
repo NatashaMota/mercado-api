@@ -32,4 +32,8 @@ public class CategoriaService {
     public Optional<Categoria> listarPorId(UUID id){
         return categoriaRepository.findById(id);
     }
+
+    public Optional<Categoria> listarPorNome(String nome){
+        return categoriaRepository.findCategoriaByNomeIgnoreCase(nome);
+    }
 }

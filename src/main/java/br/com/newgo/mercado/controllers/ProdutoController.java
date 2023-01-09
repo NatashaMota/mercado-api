@@ -2,8 +2,10 @@ package br.com.newgo.mercado.controllers;
 
 import br.com.newgo.mercado.dtos.ProdutoDto;
 import br.com.newgo.mercado.dtos.ProdutoDtoOutput;
+import br.com.newgo.mercado.models.Categoria;
 import br.com.newgo.mercado.models.Produto;
-import br.com.newgo.mercado.repository.ProdutoRepository;
+import br.com.newgo.mercado.repository.CategoriaRepository;
+import br.com.newgo.mercado.services.CategoriaService;
 import br.com.newgo.mercado.services.ProdutoService;
 import br.com.newgo.mercado.storage.Disco;
 import jakarta.validation.Valid;
@@ -28,14 +30,17 @@ public class ProdutoController {
     private final ProdutoService produtoService;
     private final Disco disco;
     private final ModelMapper modelMapper;
-    private final ProdutoRepository produtoRepository;
 
-    public ProdutoController(ProdutoService produtoService, Disco disco, ModelMapper modelMapper,
-                             ProdutoRepository produtoRepository) {
+    private final CategoriaService categoriaService;
+    private final CategoriaRepository categoriaRepository;
+
+    public ProdutoController(ProdutoService produtoService, Disco disco, ModelMapper modelMapper, CategoriaService categoriaService,
+                             CategoriaRepository categoriaRepository) {
         this.produtoService = produtoService;
         this.disco = disco;
         this.modelMapper = modelMapper;
-        this.produtoRepository = produtoRepository;
+        this.categoriaService = categoriaService;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @GetMapping({"","/" })
@@ -58,7 +63,13 @@ public class ProdutoController {
 
     @PostMapping(value = {"", "/"})
     public ResponseEntity<Object> adicionar(@RequestBody @Valid ProdutoDto produtoDto){
+        if(!categoriaService.existePorNome(produtoDto.getCategoriaNome())){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não existe.");
+        }
+
+        Optional<Categoria> categoria = categoriaService.listarPorNome(produtoDto.getCategoriaNome());
         Produto produto = modelMapper.map(produtoDto, Produto.class);
+        produto.setCategoria(categoria.get());
         produtoService.salvar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(produto, ProdutoDtoOutput.class));
     }
@@ -89,7 +100,14 @@ public class ProdutoController {
         Produto produto = modelMapper.map(produtoOptional.get(), Produto.class);
         produto.setImagem(disco.alterar(foto, produtoOptional.get().getImagem()));
         BeanUtils.copyProperties(produtoDto, produto);
+
+        Optional<Categoria> categoria = categoriaService.listarPorNome(produtoDto.getCategoriaNome());
+        if (categoria.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não existe.");
+        }
+
         produto.setId(produtoOptional.get().getId());
+        produto.setCategoria(categoria.get());
         produtoService.salvar(produto);
         return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(produto, ProdutoDtoOutput.class));
     }
