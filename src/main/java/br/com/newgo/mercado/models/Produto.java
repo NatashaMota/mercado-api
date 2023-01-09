@@ -1,6 +1,8 @@
 package br.com.newgo.mercado.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,10 @@ public class Produto extends AbstractEntity {
     private String imagem;
 
     private boolean ativo = false;
+
+    @NotNull
+    @Positive
+    private Float preco;
 
     @OneToMany(mappedBy = "produto")
     private Set<ProdutoCompra> produtoCompras = new HashSet<>();

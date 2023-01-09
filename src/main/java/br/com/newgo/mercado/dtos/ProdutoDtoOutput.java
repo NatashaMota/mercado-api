@@ -14,7 +14,8 @@ import java.util.UUID;
 public class ProdutoDtoOutput extends ProdutoDto{
 
     private UUID id;
-    private boolean ativo = false;
+    private Boolean ativo = false;
     private String categoriaNome;
     private String imagem;
+    private Float preco;
 }
