@@ -5,12 +5,17 @@ import br.com.newgo.mercado.dtos.ProdutoDtoOutput;
 import br.com.newgo.mercado.models.Categoria;
 import br.com.newgo.mercado.models.Produto;
 import br.com.newgo.mercado.repository.CategoriaRepository;
+import br.com.newgo.mercado.repository.ProdutoCompraRepository;
+import br.com.newgo.mercado.repository.ProdutoRepository;
 import br.com.newgo.mercado.services.CategoriaService;
 import br.com.newgo.mercado.services.ProdutoService;
 import br.com.newgo.mercado.storage.Disco;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,20 +38,33 @@ public class ProdutoController {
 
     private final CategoriaService categoriaService;
     private final CategoriaRepository categoriaRepository;
+    private final ProdutoRepository produtoRepository;
+    private final ProdutoCompraRepository produtoCompraRepository;
 
     public ProdutoController(ProdutoService produtoService, Disco disco, ModelMapper modelMapper, CategoriaService categoriaService,
-                             CategoriaRepository categoriaRepository) {
+                             CategoriaRepository categoriaRepository,
+                             ProdutoRepository produtoRepository,
+                             ProdutoCompraRepository produtoCompraRepository) {
         this.produtoService = produtoService;
         this.disco = disco;
         this.modelMapper = modelMapper;
         this.categoriaService = categoriaService;
         this.categoriaRepository = categoriaRepository;
+        this.produtoRepository = produtoRepository;
+        this.produtoCompraRepository = produtoCompraRepository;
     }
 
     @GetMapping({"","/" })
-    public ResponseEntity<Object> listarTodos(){
-        List<ProdutoDtoOutput> produtos = this.produtosParaProdutoDtoOutput(produtoService.listarTodos());
-        return ResponseEntity.status(HttpStatus.OK).body(produtos);
+    public ResponseEntity<Page> listarTodos(Pageable pageable){
+        Page<Produto> produtos = produtoService.listarTodos(pageable);
+        List<ProdutoDtoOutput> produtosList = new ArrayList<>();
+
+        for(Produto p: produtos){
+            ProdutoDtoOutput p2 = modelMapper.map(p, ProdutoDtoOutput.class);
+            produtosList.add(p2);
+        }
+        Page<ProdutoDtoOutput> produtoDtoOutputPage = new PageImpl<>(produtosList);
+        return ResponseEntity.status(HttpStatus.OK).body(produtoDtoOutputPage);
     }
 
     @GetMapping("/descricao/{descricao}")

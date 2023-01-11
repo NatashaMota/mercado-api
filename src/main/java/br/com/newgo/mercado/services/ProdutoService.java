@@ -4,6 +4,8 @@ import br.com.newgo.mercado.models.Produto;
 import br.com.newgo.mercado.repository.CategoriaRepository;
 import br.com.newgo.mercado.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +23,8 @@ public class ProdutoService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    public List<Produto> listarTodos(){
-        return produtoRepository.findAll();
+    public Page<Produto> listarTodos(Pageable pageable){
+        return produtoRepository.findAll(pageable);
     }
 
     public List<Produto> listarPorNome(String nome){

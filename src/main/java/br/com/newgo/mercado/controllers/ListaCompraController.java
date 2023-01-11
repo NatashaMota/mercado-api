@@ -157,4 +157,11 @@ public class ListaCompraController {
 
     }
 
+    @GetMapping({"/{id}/total"})
+    public ResponseEntity<Object> totalListaCompra(@PathVariable UUID id){
+        List<ProdutoCompra> prdutosCompra = produtoCompraService.acharPorListaId(id);
+        Float total;
+        return null;
+    }
+
 }
