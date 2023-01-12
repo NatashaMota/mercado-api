@@ -79,6 +79,16 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtos);
     }
 
+    @GetMapping("contendo/{conteudo}")
+    public ResponseEntity<Object> listarContendo(@PathVariable(name = "conteudo") String conteudo){
+        List<ProdutoDtoOutput> produtos = produtoService.listarContendo(conteudo);
+        if(produtos.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum produto foi encontrado.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(produtos);
+    }
+
     @PostMapping(value = {"", "/"})
     public ResponseEntity<Object> adicionar(@RequestBody @Valid ProdutoDto produtoDto){
         if(!categoriaService.existePorNome(produtoDto.getCategoriaNome())){
