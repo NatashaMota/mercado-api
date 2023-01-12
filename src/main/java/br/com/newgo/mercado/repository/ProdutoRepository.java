@@ -14,6 +14,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
 
     List<Produto> findByDescricaoContainingIgnoreCase(String descricao);
 
-    List <Produto> findByCategoria_NomeContainingIgnoreCase(String conteudo);
+    List<Produto> findByCategoria_NomeContainingIgnoreCase(String conteudo);
 
+    List<Produto> findByPrecoBetween(Float min, Float max);
 }

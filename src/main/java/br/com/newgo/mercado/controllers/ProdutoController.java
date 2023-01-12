@@ -79,10 +79,21 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtos);
     }
 
-    @GetMapping("contendo/{conteudo}")
+    @GetMapping("/contendo/{conteudo}")
     public ResponseEntity<Object> listarContendo(@PathVariable(name = "conteudo") String conteudo){
         List<ProdutoDtoOutput> produtos = produtoService.listarContendo(conteudo);
         if(produtos.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum produto foi encontrado.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(produtos);
+    }
+
+    @GetMapping("/faixaPreco/{min}/{max}")
+    public ResponseEntity<Object> listarPorFaixaPreco(@PathVariable(name = "min") Float minimo,
+                                                      @PathVariable(name = "max") Float maximo){
+        List<ProdutoDtoOutput> produtos = produtoService.listarPorFaixaPreco(minimo, maximo);
+        if (produtos.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum produto foi encontrado.");
         }
 

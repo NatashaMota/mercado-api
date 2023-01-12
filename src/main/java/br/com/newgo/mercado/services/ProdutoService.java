@@ -62,6 +62,11 @@ public class ProdutoService {
         return produtosParaProdutoDtoOutput(produtos);
     }
 
+    public List<ProdutoDtoOutput> listarPorFaixaPreco(Float minimo, Float maximo) {
+        List<Produto> produtos = produtoRepository.findByPrecoBetween(minimo, maximo);
+        return produtosParaProdutoDtoOutput(produtos);
+    }
+
     private List<ProdutoDtoOutput> produtosParaProdutoDtoOutput(List<Produto> produtos){
         List<ProdutoDtoOutput> produtosDtoOutputList = new ArrayList<>();
         for(Produto produto: produtos){
